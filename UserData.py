@@ -5,7 +5,8 @@ class userData(stockData):
 
     def __init__(self): #self is basically "this." in java
         super().__init__()
-        self.user = self.load_data()
+        self.user = self.load_data() #.user is initialized to load_data so you dont need to call load_data everytime instead js do .user
+
 
     def create_account(self, user):
         username = input("Enter a new username: ").strip()
