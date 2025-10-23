@@ -1,50 +1,56 @@
-def main():
-	users = load_data #loads all the saved user accounts from (users.json)
-	print("Welcome to PaperInvest! - Stock Market Simulator")
+from UserData import userData
+from StockData import stockData
 
-	current_user = None
+class PaperInvestApp(userData,stockData):
+	def __init__(self):
+		super().__init__()
+		self.user = self.load_data()
+		self.current_user = None
 
-	while not current_user:
+	def run(self):
+		print("Welcome to PaperInvest! - Stock Market Simulator")
+
+	while not self.current_user:
 		print("\n1. Login\n2. Create Account\n3. Exit")
-
-	choice = input("Choose an option")
+		choice = input("Choose an option")
 
 	if choice == 1:
-		current_user = login(users) #login returns the username so current_user will hold onto it
+		self.current_user = self.login(self.user) #login returns the username so current_user will hold onto it
 	elif choice == 2:
-		current_user = create_account(users) #create_account returns the username
+		current_user = self.create_account(self.user) #create_account returns the username
 	elif choice == 3:
 		return
 
-	user = users[current_user] #user[current_user] will contain a username (key)
+	user = self.users[self.current_user] #user[current_user] will contain a username (key)
 
 	while True:
-		print(f"\n💰Balance: ${round(user['balance'],2) | Portfolio Value: ${portfolio_value(user)}")
-		print("\n1, View Portfolio")
+		print(f"\n💰Balance: ${round(user['balance'],2) | Portfolio Value: ${self.portfolio_value(user)}")
+		print("\n1. View Portfolio")
 		print("2. Buy Stock")
 		print("3. Sell Stock")
 		print("4. View Transactions")
-		printf("5. Save & Exit")
+		print("5. Save & Exit")
 
 
 	choice = input("Select An Option")
 
 	match choice:
 		case "1":
-			view_portfolio(current_user)
+			self.view_portfolio(user)
 		case "2":
-			buy_stock(current_user)
+			self.buy_stock(user)
 		case "3":
-			sell_stock(current_user)
+			self.sell_stock(user)
 		case "4":
-			view_transactions(current_user)
-		case "5"
-			save_data(current_user)
+			self.view_transactions(user)
+		case "5":
+			self.save_data(user)
 			break
 		case _:
  			printf("Invalid Option)
 
-	save_data(current_user)
+	self.save_data(user)
 
-	if __name__ == "__main__"
-	    main()
+	if __name__ == "__main__":
+	    app = PaperInvestApp()
+	    app.run();
