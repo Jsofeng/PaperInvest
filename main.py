@@ -20,11 +20,11 @@ def main():
 
 	while True:
 		print(f"\n💰Balance: ${round(user['balance'],2) | Portfolio Value: ${portfolio_value(user)}")
-		print("\n1, View Portfolio")
+		print("\n1. View Portfolio")
 		print("2. Buy Stock")
 		print("3. Sell Stock")
 		print("4. View Transactions")
-		printf("5. Save & Exit")
+		print("5. Save & Exit")
 
 
 	choice = input("Select An Option")
@@ -38,13 +38,13 @@ def main():
 			sell_stock(current_user)
 		case "4":
 			view_transactions(current_user)
-		case "5"
+		case "5":
 			save_data(current_user)
 			break
 		case _:
  			printf("Invalid Option)
 
-	save_data(current_user)
+	save_data(user)
 
-	if __name__ == "__main__"
+	if __name__ == "__main__":
 	    main()
