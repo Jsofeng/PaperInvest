@@ -1,3 +1,12 @@
+from UserData import userData
+from StockData import stockData
+
+class main(userData,stockData):
+
+	def __init__(self):
+		super().__init__()
+		self.user = self.load_data()
+
 def main():
 	users = load_data #loads all the saved user accounts from (users.json)
 	print("Welcome to PaperInvest! - Stock Market Simulator")
