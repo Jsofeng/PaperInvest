@@ -138,7 +138,10 @@ class userData(stockData):
 	self.user["balance"] -= cost
 
 	if symbol in self.user["portfolio"]:
+#Portfolio is in quotes because it’s a string literal — the actual name of the key inside the dictionary (all the stocks & shares)
 		self.user[symbol]["shares"] += shares
+		#symbol isn't in quotes because it's a variable storing the stock
+		#shares is in quotes because theres it's the name of another key
 
 	else:
 		self.user["portfolio"][symbol] += {"shares": shares}
