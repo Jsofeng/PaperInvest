@@ -120,6 +120,41 @@ class userData(stockData):
 
         print(f"Sold {shares_to_sell} shares of {symbol} at ${price} each for a total of ${round(total_revenue, 2)}.")
 
+    def buy_partial(self, user):
+	symbol = input("What stock do you want to buy (partially)?: ")
+	price = self.get_price(symbol)
+
+	if not price:
+		return
+
+	print("Current price of {symbol} is ${price} per share: ")
+
+	shares = input("How much would you like to purchase?: "):
+	total_cost = shares * price
+
+	if self.user["balance"] < total_cost:
+		print("Insufficient balance"]
+
+	self.user["balance"] -= cost
+
+	if symbol in self.user["portfolio"]:
+#Portfolio is in quotes because it’s a string literal — the actual name of the key inside the dictionary (all the stocks & shares)
+		self.user[symbol]["shares"] += shares
+		#symbol isn't in quotes because it's a variable storing the stock
+		#shares is in quotes because theres it's the name of another key
+
+	else:
+		self.user["portfolio"][symbol] += {"shares": shares}
+
+	self.user["transactions"].append({
+		"type": "buy",
+		"symbol": symbol,
+		"shares": shares,
+		"price": price,
+		"date": dateTime.now().strftime("%Y-%m-%d %H:%M:%S")
+	})
+
+	print(f"Bought {shares} of {symbol} at ${price} each for a total of ${round(total_cost, 2)}")
 
     def view_transactions(self, user):
         if not self.user["transactions"]:
@@ -128,3 +163,4 @@ class userData(stockData):
 
         for t in self.user["transactions"]:
             print(f"{t['date']} | {t['type']} | {t['symbol']} | {t['shares']} shares @ ${t['price']}")
+
