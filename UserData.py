@@ -173,10 +173,15 @@ class userData(stockData):
 		print("Insufficient shares")
 		return
 
-	self.user["portfolio"][symbol]["shares"] -= partial_sell 
 	price = get_price(symbol) 
 	total_revenue = price * partial_sell
 	self.user["balance"] += total_revenue
+
+	if partial_sell == shares_owned:
+		del self.user["portfolio][symbol]
+
+	else:
+		self.user["portfolio"[symbol]["shares"] -= partial_sell
 
 	self.user["transactions"].append({
 		"type": "sell"
