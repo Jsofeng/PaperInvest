@@ -156,6 +156,36 @@ class userData(stockData):
 
 	print(f"Bought {shares} of {symbol} at ${price} each for a total of ${round(total_cost, 2)}")
 
+    def sell_partial(self, user):
+
+	symbol = input("Enter the stock you want to sell: ")
+
+	if symbol not in self.user["portfolio"]
+		print("You do not own this stock"
+		return
+
+	shares_owned = self.user["portfolio"][symbol]["shares"]
+	print("You own {shares} shares of {symbol}")
+
+	partial_sell = int(input("How much do you want to sell (partially)")
+
+	if partial_sell > shares_owned:
+		print("Insufficient shares")
+		return
+
+	self.user["portfolio"][symbol]["shares"] -= partial_sell 
+	price = get_price(symbol) 
+	total_revenue = price * partial_sell
+	self.user["balance"] += total_revenue
+
+	self.user["transactions"].append({
+		"type": "sell"
+		"symbol": symbol
+		"shares": shares
+		"price": price
+		"date": dateTime.now().strftime("%Y-%m-%d %H:%m:%s")
+
+
     def view_transactions(self, user):
         if not self.user["transactions"]:
             print("This account does not have any transactions.")
