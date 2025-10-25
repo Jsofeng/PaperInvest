@@ -82,40 +82,6 @@ def buy_stock(self, user):
 
     print(f"Bought {shares} shares of {symbol} at ${price} each for a total of ${round(total_cost, 2)}.")
 
-def sell_stock(self, user):
-    symbol = input("Enter stock to sell: ").upper()
-
-    if symbol not in self.user["portfolio"]:
-        print("You do not own this stock.")
-        return
-
-    shares_owned = self.user["portfolio"][symbol]["shares"]
-    print(f"You own {shares_owned} shares of {symbol}.")
-    shares_to_sell = int(input("Enter amount of shares to sell: "))
-
-    if shares_to_sell > shares_owned:
-        print("Insufficient shares.")
-        return
-
-    price = self.get_price(symbol)
-    total_revenue = price * shares_to_sell
-    self.user["balance"] += total_revenue
-
-    if shares_to_sell == shares_owned:
-        del self.user["portfolio"][symbol]
-    else:
-        self.user["portfolio"][symbol]["shares"] -= shares_to_sell
-
-    self.user["transactions"].append({
-        "type": "sell",
-        "symbol": symbol,
-        "shares": shares_to_sell,
-        "price": price,
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
-
-    print(f"Sold {shares_to_sell} shares of {symbol} at ${price} each for a total of ${round(total_revenue, 2)}.")
-
 def buy_partial(self, user):
     symbol = input("What stock do you want to buy (partially)?: ").upper()
     price = self.get_price(symbol)
@@ -151,6 +117,41 @@ def buy_partial(self, user):
     })
 
     print(f"Bought {shares} of {symbol} at ${price} each for a total of ${round(total_cost, 2)}")
+
+
+def sell_stock(self, user):
+    symbol = input("Enter stock to sell: ").upper()
+
+    if symbol not in self.user["portfolio"]:
+        print("You do not own this stock.")
+        return
+
+    shares_owned = self.user["portfolio"][symbol]["shares"]
+    print(f"You own {shares_owned} shares of {symbol}.")
+    shares_to_sell = int(input("Enter amount of shares to sell: "))
+
+    if shares_to_sell > shares_owned:
+        print("Insufficient shares.")
+        return
+
+    price = self.get_price(symbol)
+    total_revenue = price * shares_to_sell
+    self.user["balance"] += total_revenue
+
+    if shares_to_sell == shares_owned:
+        del self.user["portfolio"][symbol]
+    else:
+        self.user["portfolio"][symbol]["shares"] -= shares_to_sell
+
+    self.user["transactions"].append({
+        "type": "sell",
+        "symbol": symbol,
+        "shares": shares_to_sell,
+        "price": price,
+        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+
+    print(f"Sold {shares_to_sell} shares of {symbol} at ${price} each for a total of ${round(total_revenue, 2)}.")
 
 def sell_partial(self, user):
     symbol = input("Enter the stock you want to sell: ").upper()
