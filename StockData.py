@@ -29,6 +29,10 @@ class stockData:
             print("Invalid stock or unable to fetch price.")
             return None
 
+    def displayTopGainers():
+
+    def displayTopLossings():
+
     def portfolio_value(self, user):
         total = 0
         for symbol, info in user["portfolio"].items():
