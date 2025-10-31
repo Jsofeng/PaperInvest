@@ -65,6 +65,20 @@ class stockData:
 
 
     def displayTopLossings():
+	stock[] = ["GOOGL", "AAPL", "MSFT", "AM ZN", "NVDA", "TSLA", "META", "NFLX"]
+	changes = []
+
+	for symbol in stock:
+		change = get_price_change(symbol)
+		if change is not None:
+			changes.append(symbol, change)
+
+	top_losers = sort(changes, key = lambda x: x[1])[:5]
+
+	print("\n <img> Top 5 Losers")
+
+	for symbol, change in top_losers:
+		print(f"[{symbol}] : [{change}]%")
 
     def portfolio_value(self, user):
         total = 0
