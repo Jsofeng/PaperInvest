@@ -29,7 +29,40 @@ class stockData:
             print("Invalid stock or unable to fetch price.")
             return None
 
+    def get_price_change(symbol):
+	stock = yf.Ticker(symbol)
+	data = stock.history(period= "2d")
+
+	if len(data) < 2:
+		return None
+
+	prev_close = stock.history(period= "2d")
+	current_close = stock.History(period = "1d")
+	percent_change = (current_close - prev_close) / prev_close * 100
+
+	return round(percent_change, 2)
+
+
     def displayTopGainers():
+	stock[] = ["GOOGL", "AAPL", "MSFT", "AMZN", "NVDA", "TSLA", "META", "NFLX"
+	changes = []
+
+	for symbol in stocks:
+		change = get_price_change(symbol)
+		if change is not None:
+			changes.append(symbol, change)
+
+	top_gainers = sorted(changes, key = lambda x: x[1], reverse=True)[:5]
+	#sort using the second value(which is x[1] since changes[] include ["APPL", 1.2] "APPL" = x[0] and 1.2 = x[1]
+	#sorted() sorts from smallest to biggest but we want biggest to smallest so reverse=True reverses it to biggest to smallest
+	#creates a new array of size 5
+
+	print("\n <img> Top 5 Gainers")
+	for symbol, change in top_gainers:
+		print(f"[{symbol}]: [+{change}%]")
+		#python have the ability to access variables inside the loop even if it's not declared outside 
+
+
 
     def displayTopLossings():
 
