@@ -5,7 +5,7 @@ import os
 
 DATA_FILE = "users.json"
 
-class stockData:
+class StockData:
     def __init__(self, data_file=DATA_FILE):
         self.data_file = data_file
 
@@ -29,61 +29,51 @@ class stockData:
             print("Invalid stock or unable to fetch price.")
             return None
 
-    def get_price_change(symbol):
-	stock = yf.Ticker(symbol)
-	data = stock.history(period= "2d")
+    def get_price_change(self, symbol):
+        try:
+            stock = yf.Ticker(symbol)
+            data = stock.history(period="2d")
 
-	if len(data) < 2:
-		return None
+            if len(data) < 2:
+                return None
 
-	prev_close = stock.history(period= "2d")
-	current_close = stock.History(period = "1d")
-	percent_change = (current_close - prev_close) / prev_close * 100
+            prev_close = data["Close"].iloc[-2]
+            current_close = data["Close"].iloc[-1]
+            percent_change = ((current_close - prev_close) / prev_close) * 100
 
-	return round(percent_change, 2)
+            return round(percent_change, 2)
+        except Exception:
+            print(f"Error fetching data for {symbol}")
+            return None
+
+    def display_top_gainers(self):
+        stocks = ["GOOGL", "AAPL", "MSFT", "AMZN", "NVDA", "TSLA", "META", "NFLX"]
+        changes = []
+
+        for symbol in stocks:
+            change = self.get_price_change(symbol)
+            if change is not None:
+                changes.append((symbol, change))
+
+        top_gainers = sorted(changes, key=lambda x: x[1], reverse=True)[:5]
+
+        print("\n 🗠 [Top 5 Gainers]")
+        for symbol, change in top_gainers:
+            print(f"[{symbol}]: +{change}%")
+
+    def display_top_losers(self):
+        stocks = ["GOOGL", "AAPL", "MSFT", "AMZN", "NVDA", "TSLA", "META", "NFLX"]
+        changes = []
+
+        for symbol in stocks:
+            change = self.get_price_change(symbol)
+            if change is not None:
+                changes.append((symbol, change))
+
+        top_losers = sorted(changes, key=lambda x: x[1])[:5]
+
+        print("\n 📉 [Top 5 Losers]")
+        for symbol, change in top_losers:
+            print(f"[{symbol}]: {change}%")
 
 
-    def displayTopGainers():
-	stock[] = ["GOOGL", "AAPL", "MSFT", "AMZN", "NVDA", "TSLA", "META", "NFLX"
-	changes = []
-
-	for symbol in stocks:
-		change = get_price_change(symbol)
-		if change is not None:
-			changes.append(symbol, change)
-
-	top_gainers = sorted(changes, key = lambda x: x[1], reverse=True)[:5]
-	#sort using the second value(which is x[1] since changes[] include ["APPL", 1.2] "APPL" = x[0] and 1.2 = x[1]
-	#sorted() sorts from smallest to biggest but we want biggest to smallest so reverse=True reverses it to biggest to smallest
-	#creates a new array of size 5
-
-	print("\n <img> Top 5 Gainers")
-	for symbol, change in top_gainers:
-		print(f"[{symbol}]: [+{change}%]")
-		#python have the ability to access variables inside the loop even if it's not declared outside 
-
-
-
-    def displayTopLossings():
-	stock[] = ["GOOGL", "AAPL", "MSFT", "AM ZN", "NVDA", "TSLA", "META", "NFLX"]
-	changes = []
-
-	for symbol in stock:
-		change = get_price_change(symbol)
-		if change is not None:
-			changes.append(symbol, change)
-
-	top_losers = sort(changes, key = lambda x: x[1])[:5]
-
-	print("\n <img> Top 5 Losers")
-
-	for symbol, change in top_losers:
-		print(f"[{symbol}] : [{change}]%")
-
-    def portfolio_value(self, user):
-        total = 0
-        for symbol, info in user["portfolio"].items():
-            price = self.get_price(symbol)
-            if price is not None:
-                total += price * info["shares"]
-        return round(total, 2)
