@@ -52,6 +52,7 @@ def view_portfolio(self, user):
 
 def buy_stock(self, user):
     symbol = input("Enter a stock symbol (e.g. AAPL, GOOGL, MSFT): ").upper()
+    display_stock_history(symbol, "3mon")
     price = self.get_price(symbol)
 
     if not price:
@@ -84,6 +85,7 @@ def buy_stock(self, user):
 
 def buy_partial(self, user):
     symbol = input("What stock do you want to buy (partially)?: ").upper()
+    display_stock_history(symbol, "3mo")
     price = self.get_price(symbol)
 
     if not price:
@@ -121,6 +123,7 @@ def buy_partial(self, user):
 
 def sell_stock(self, user):
     symbol = input("Enter stock to sell: ").upper()
+    display_stock_history(symbol, "3mo")
 
     if symbol not in self.user["portfolio"]:
         print("You do not own this stock.")
@@ -155,6 +158,7 @@ def sell_stock(self, user):
 
 def sell_partial(self, user):
     symbol = input("Enter the stock you want to sell: ").upper()
+    display_stock_history(symbol, "3mo")
 
     if symbol not in self.user["portfolio"]:
         print("You do not own this stock")
