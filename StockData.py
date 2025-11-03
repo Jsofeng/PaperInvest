@@ -1,5 +1,6 @@
 # data_handler.py
 import yfinance as yf
+import matplotlib.pyplot as plt
 import json
 import os
 
@@ -77,3 +78,25 @@ class StockData:
             print(f"[{symbol}]: {change}%")
 
 
+    def display_price_history(symbol, period, interval):
+
+	try:
+		stock = yf.Ticker(symbol)
+		data = stock.history(period=period, interval=interval)
+
+		if data.empty:
+			print("No data found for this stock)
+			return
+
+		plt.figure(figsize=(10,5))
+		plt.plot(data.index, data["Close"], label= f"{symbol}, Price", color="blue")
+		plt.title(f"{symbol} price history ({period})")
+		plt.xlabel("Date")
+		plt.ylabel("Price [USD]")
+		plt.grid(True)
+		plt.legend()
+		plt.show()
+
+
+	except Exception as e:
+		print(f"Error fetching data for {symbol}: {e}")
