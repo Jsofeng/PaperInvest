@@ -78,7 +78,7 @@ class StockData:
             print(f"[{symbol}]: {change}%")
 
 
-    def display_price_history(symbol, period, interval):
+    def display_stock_history(symbol, period, interval):
 
 	try:
 		stock = yf.Ticker(symbol)
