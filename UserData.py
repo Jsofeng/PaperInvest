@@ -17,7 +17,8 @@ def create_account(self, user):
     self.user[username] = {
         "balance": 10000,
         "portfolio": {},
-        "transactions": []
+        "transactions": [],
+	"history": []
     }
     self.save_data(self.user)
     print(f"Account created! Welcome, {username}!")
@@ -197,4 +198,49 @@ def view_transactions(self, user):
 
     for t in self.user["transactions"]:
         print(f"{t['date']} | {t['type']} | {t['symbol']} | {t['shares']} shares @ ${t['price']}")
+
+
+def total_account_value(self, user):
+	total = self.user["balance"]
+	for symbol, info in self.user["portfolio"].items():
+	# info holds the value of user["portfolio"][symbol]
+
+		price = get_price(symbol)
+			if price:
+			total += price * info["shares"]
+	return round(total, 2)
+
+def record_daily_value(user):
+	today = datetime.now().strftime("%Y:%m:%d")
+	value = total_account_value(user)
+
+	if "history" not in user:
+		user["history"] = []
+
+	if user["history"] and user["history"][-1]["date"] == today: #checks if theres already a history and if the most recent entry was today
+		user["history"][-1]["value"] = value
+		#replace the previous total_account_value with today's 
+
+	else: #if theres no history of the total_account_value
+	   user["history"].append({"date": today, "value": value})
+
+def show_daily_gain_loss(user):
+	if "history" not in user or len(user["history"]) < 2:
+		print("Not enough data to show daily gain/loss")
+		return
+
+	today = user["history"][-1]["value"]
+	yesterday = user["history"][-2]["value"]
+
+	change = today - yesterday
+	percent = (change / yesterday) * 100
+
+	print("\n📊 Daily Performance:")
+        print(f"Yesterday: ${yesterday}")
+        print(f"Today:     ${today}")
+
+	if change >=0:
+		print(f" Gain: +${round(change, 2)} (+{round(percent, 2)}%)")
+	else:
+		print(f" Loss: -${round(change, 2)} (-{round(percent, 2)}%)")
 
