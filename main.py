@@ -31,7 +31,8 @@ class PaperInvestApp(userData,stockData):
 		print("4. View Transactions")
 		print("5. View Top Gainers")
 		print("6. View Top Losers")
-		print("7. Save & Exit")
+		print("7. view Daily Gain/loss")
+		print("8. Save & Exit")
 
 
 	choice = input("Select An Option")
@@ -50,6 +51,8 @@ class PaperInvestApp(userData,stockData):
 		case "6":
 			displayTopLossings()
 		case "7":
+			show_daily_gain_loss(user)
+		case "8":
 			self.save_data(user)
 			break
 		case _:
