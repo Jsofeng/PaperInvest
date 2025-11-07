@@ -209,3 +209,17 @@ def total_account_value(self, user):
 			if price:
 			total += price * info["shares"]
 	return round(total, 2)
+
+def record_daily_value(user):
+	today = datetime.now().strftime("%Y:%m:%d")
+	value = total_account_value(user)
+
+	if "history" not in user:
+		user["history"] = []
+
+	if user["history"] and user["history"][-1]["date"] == today: #checks if theres already a history and if the most recent entry was today
+		user["history"][-1]["value"] = value
+		#replace the previous total_account_value with today's 
+
+	else: #if theres no history of the total_account_value
+	   user["history"].append({"date": today, "value": value})
