@@ -72,7 +72,8 @@ class StockData:
                 changes.append((symbol, change))
 
         top_losers = sorted(changes, key=lambda x: x[1])[:5]
-
+	#x : x[1] means use the second value in the hashmap which is the %
+	#key = parameter tells python what value to sort lambda x: x[1] creates a tiny function that returns the second value of each element in the hashmap
         print("\n 📉 [Top 5 Losers]")
         for symbol, change in top_losers:
             print(f"[{symbol}]: {change}%")
