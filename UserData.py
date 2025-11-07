@@ -223,3 +223,24 @@ def record_daily_value(user):
 
 	else: #if theres no history of the total_account_value
 	   user["history"].append({"date": today, "value": value})
+
+def show_daily_gain_loss(user):
+	if "history" not in user or len(user["history"]) < 2:
+		print("Not enough data to show daily gain/loss")
+		return
+
+	today = user["history"][-1]["value"]
+	yesterday = user["history"][-2]["value"]
+
+	change = today - yesterday
+	percent = (change / yesterday) * 100
+
+	print("\n📊 Daily Performance:")
+        print(f"Yesterday: ${yesterday}")
+        print(f"Today:     ${today}")
+
+	if change >=0:
+		print(f" Gain: +${round(change, 2)} (+{round(percent, 2)}%)")
+	else:
+		print(f" Loss: -${round(change, 2)} (-{round(percent, 2)}%)")
+
