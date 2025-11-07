@@ -17,7 +17,8 @@ def create_account(self, user):
     self.user[username] = {
         "balance": 10000,
         "portfolio": {},
-        "transactions": []
+        "transactions": [],
+	"history": []
     }
     self.save_data(self.user)
     print(f"Account created! Welcome, {username}!")
@@ -198,3 +199,13 @@ def view_transactions(self, user):
     for t in self.user["transactions"]:
         print(f"{t['date']} | {t['type']} | {t['symbol']} | {t['shares']} shares @ ${t['price']}")
 
+
+def total_account_value(self, user):
+	total = self.user["balance"]
+	for symbol, info in self.user["portfolio"].items():
+	# info holds the value of user["portfolio"][symbol]
+
+		price = get_price(symbol)
+			if price:
+			total += price * info["shares"]
+	return round(total, 2)
