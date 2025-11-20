@@ -244,3 +244,4 @@ def show_daily_gain_loss(user):
 	else:
 		print(f" Loss: -${round(change, 2)} (-{round(percent, 2)}%)")
 
+
