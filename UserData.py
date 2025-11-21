@@ -1,246 +1,237 @@
 from datetime import datetime
-from StockData import stockData
+from StockData import StockData
 
-class userData(stockData):
-
+class userData(StockData):
 
     def __init__(self):  # self is basically "this." in java
-     super().__init__()
-     self.user = self.load_data()  # .user is initialized to load_data so you dont need to call load_data everytime instead js do .user
+        super().__init__()
+        self.user = self.load_data()  # .user is initialized to load_data so you dont need to call load_data everytime instead js do .user
 
-def create_account(self, user):
-    username = input("Enter a new username: ").strip()
-    if username in self.user:
-        print("Username already exists. Please try again.")
-        return None
+    def create_account(self, user):
+        username = input("Enter a new username: ").strip()
+        if username in self.user:
+            print("Username already exists. Please try again.")
+            return None
 
-    self.user[username] = {
-        "balance": 10000,
-        "portfolio": {},
-        "transactions": [],
-	"history": []
-    }
-    self.save_data(self.user)
-    print(f"Account created! Welcome, {username}!")
-    return username
+        self.user[username] = {
+            "balance": 10000,
+            "portfolio": {},
+            "transactions": [],
+            "history": []
+        }
+        self.save_data(self.user)
+        print(f"Account created! Welcome, {username}!")
+        return username
 
-def login(self, user):
-    username = input("Enter username: ").strip()
+    def login(self, user):
+        username = input("Enter username: ").strip()
 
-    if username not in self.user:
-        print("Username not found.")
-        return None
+        if username not in self.user:
+            print("Username not found.")
+            return None
 
-    print(f"Welcome back, {username}!")
-    return username
+        print(f"Welcome back, {username}!")
+        return username
 
-def view_portfolio(self, user):
-    print("\n--- Portfolio ---")
+    def view_portfolio(self, user):
+        print("\n--- Portfolio ---")
 
-    if not self.user["portfolio"]:
-        print("You do not own any stocks.")
-        return
+        if not user["portfolio"]:
+            print("You do not own any stocks.")
+            return
 
-    total_value = 0
-    for symbol, info in self.user["portfolio"].items():
+        total_value = 0
+        for symbol, info in user["portfolio"].items():
+            price = self.get_price(symbol)
+            shares = info["shares"]
+            total = price * shares
+            total_value += total
+            print(f"{symbol}: {shares} shares @ ${price} = ${round(total, 2)}")
+
+        print(f"Total portfolio value: ${round(total_value, 2)}")
+
+    def buy_stock(self, user):
+        symbol = input("Enter a stock symbol (e.g. AAPL, GOOGL, MSFT): ").upper()
+        self.display_stock_history(symbol, "3mo", "1d")
         price = self.get_price(symbol)
-        shares = info["shares"]
-        total = price * shares
-        total_value += total
-        print(f"{symbol}: {shares} shares @ ${price} = ${round(total, 2)}")
 
-    print(f"Total portfolio value: ${round(total_value, 2)}")
+        if not price:
+            return
 
-def buy_stock(self, user):
-    symbol = input("Enter a stock symbol (e.g. AAPL, GOOGL, MSFT): ").upper()
-    display_stock_history(symbol, "3mon")
-    price = self.get_price(symbol)
+        print(f"Current price of {symbol} is ${price}")
+        shares = int(input("How many shares would you like to purchase? "))
+        total_cost = price * shares
 
-    if not price:
-        return
+        if total_cost > user["balance"]:
+            print("Insufficient balance.")
+            return
 
-    print(f"Current price of {symbol} is ${price}")
-    shares = int(input("How many shares would you like to purchase? "))
-    total_cost = price * shares
+        user["balance"] -= total_cost
 
-    if total_cost > self.user["balance"]:
-        print("Insufficient balance.")
-        return
+        if symbol in user["portfolio"]:
+            user["portfolio"][symbol]["shares"] += shares
+        else:
+            user["portfolio"][symbol] = {"shares": shares}
 
-    self.user["balance"] -= total_cost
+        user["transactions"].append({
+            "type": "buy",
+            "symbol": symbol,
+            "shares": shares,
+            "price": price,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
 
-    if symbol in self.user["portfolio"]:
-        self.user["portfolio"][symbol]["shares"] += shares
-    else:
-        self.user["portfolio"][symbol] = {"shares": shares}
+        print(f"Bought {shares} shares of {symbol} at ${price} each for a total of ${round(total_cost, 2)}.")
 
-    self.user["transactions"].append({
-        "type": "buy",
-        "symbol": symbol,
-        "shares": shares,
-        "price": price,
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
+    def buy_partial(self, user):
+        symbol = input("What stock do you want to buy (partially)?: ").upper()
+        self.display_stock_history(symbol, "3mo", "1d")
+        price = self.get_price(symbol)
 
-    print(f"Bought {shares} shares of {symbol} at ${price} each for a total of ${round(total_cost, 2)}.")
+        if not price:
+            return
 
-def buy_partial(self, user):
-    symbol = input("What stock do you want to buy (partially)?: ").upper()
-    display_stock_history(symbol, "3mo")
-    price = self.get_price(symbol)
+        print(f"Current price of {symbol} is ${price} per share:")
 
-    if not price:
-        return
+        shares = float(input("How much would you like to purchase?: "))
+        total_cost = shares * price
 
-    print(f"Current price of {symbol} is ${price} per share:")
+        if user["balance"] < total_cost:
+            print("Insufficient balance.")
+            return
 
-    shares = float(input("How much would you like to purchase?: "))
-    total_cost = shares * price
+        user["balance"] -= total_cost
 
-    if self.user["balance"] < total_cost:
-        print("Insufficient balance.")
-        return
+        if symbol in user["portfolio"]:
+            user["portfolio"][symbol]["shares"] += shares
+        else:
+            user["portfolio"][symbol] = {"shares": shares}
 
-    self.user["balance"] -= total_cost
+        user["transactions"].append({
+            "type": "buy",
+            "symbol": symbol,
+            "shares": shares,
+            "price": price,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
 
-    if symbol in self.user["portfolio"]:
-        # Portfolio is in quotes because it’s a string literal — the actual name of the key inside the dictionary (all the stocks & shares)
-        self.user["portfolio"][symbol]["shares"] += shares
-        # symbol isn't in quotes because it's a variable storing the stock
-        # shares is in quotes because theres it's the name of another key
-    else:
-        self.user["portfolio"][symbol] = {"shares": shares}
+        print(f"Bought {shares} of {symbol} at ${price} each for a total of ${round(total_cost, 2)}")
 
-    self.user["transactions"].append({
-        "type": "buy",
-        "symbol": symbol,
-        "shares": shares,
-        "price": price,
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
+    def sell_stock(self, user):
+        symbol = input("Enter stock to sell: ").upper()
+        self.display_stock_history(symbol, "3mo", "1d")
 
-    print(f"Bought {shares} of {symbol} at ${price} each for a total of ${round(total_cost, 2)}")
+        if symbol not in user["portfolio"]:
+            print("You do not own this stock.")
+            return
 
+        shares_owned = user["portfolio"][symbol]["shares"]
+        print(f"You own {shares_owned} shares of {symbol}.")
+        shares_to_sell = int(input("Enter amount of shares to sell: "))
 
-def sell_stock(self, user):
-    symbol = input("Enter stock to sell: ").upper()
-    display_stock_history(symbol, "3mo")
+        if shares_to_sell > shares_owned:
+            print("Insufficient shares.")
+            return
 
-    if symbol not in self.user["portfolio"]:
-        print("You do not own this stock.")
-        return
+        price = self.get_price(symbol)
+        total_revenue = price * shares_to_sell
+        user["balance"] += total_revenue
 
-    shares_owned = self.user["portfolio"][symbol]["shares"]
-    print(f"You own {shares_owned} shares of {symbol}.")
-    shares_to_sell = int(input("Enter amount of shares to sell: "))
+        if shares_to_sell == shares_owned:
+            del user["portfolio"][symbol]
+        else:
+            user["portfolio"][symbol]["shares"] -= shares_to_sell
 
-    if shares_to_sell > shares_owned:
-        print("Insufficient shares.")
-        return
+        user["transactions"].append({
+            "type": "sell",
+            "symbol": symbol,
+            "shares": shares_to_sell,
+            "price": price,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
 
-    price = self.get_price(symbol)
-    total_revenue = price * shares_to_sell
-    self.user["balance"] += total_revenue
+        print(f"Sold {shares_to_sell} shares of {symbol} at ${price} each for a total of ${round(total_revenue, 2)}.")
 
-    if shares_to_sell == shares_owned:
-        del self.user["portfolio"][symbol]
-    else:
-        self.user["portfolio"][symbol]["shares"] -= shares_to_sell
+    def sell_partial(self, user):
+        symbol = input("Enter the stock you want to sell: ").upper()
+        self.display_stock_history(symbol, "3mo", "1d")
 
-    self.user["transactions"].append({
-        "type": "sell",
-        "symbol": symbol,
-        "shares": shares_to_sell,
-        "price": price,
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
+        if symbol not in user["portfolio"]:
+            print("You do not own this stock")
+            return
 
-    print(f"Sold {shares_to_sell} shares of {symbol} at ${price} each for a total of ${round(total_revenue, 2)}.")
+        shares_owned = user["portfolio"][symbol]["shares"]
+        print(f"You own {shares_owned} shares of {symbol}")
 
-def sell_partial(self, user):
-    symbol = input("Enter the stock you want to sell: ").upper()
-    display_stock_history(symbol, "3mo")
+        partial_sell = float(input("How much do you want to sell (partially): "))
 
-    if symbol not in self.user["portfolio"]:
-        print("You do not own this stock")
-        return
+        if partial_sell > shares_owned:
+            print("Insufficient shares")
+            return
 
-    shares_owned = self.user["portfolio"][symbol]["shares"]
-    print(f"You own {shares_owned} shares of {symbol}")
+        price = self.get_price(symbol)
+        total_revenue = price * partial_sell
+        user["balance"] += total_revenue
 
-    partial_sell = float(input("How much do you want to sell (partially): "))
+        if partial_sell == shares_owned:
+            del user["portfolio"][symbol]
+        else:
+            user["portfolio"][symbol]["shares"] -= partial_sell
 
-    if partial_sell > shares_owned:
-        print("Insufficient shares")
-        return
+        user["transactions"].append({
+            "type": "sell",
+            "symbol": symbol,
+            "shares": partial_sell,
+            "price": price,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
 
-    price = self.get_price(symbol)
-    total_revenue = price * partial_sell
-    self.user["balance"] += total_revenue
+    def view_transactions(self, user):
+        if not user["transactions"]:
+            print("This account does not have any transactions.")
+            return
 
-    if partial_sell == shares_owned:
-        del self.user["portfolio"][symbol]
-    else:
-        self.user["portfolio"][symbol]["shares"] -= partial_sell
+        for t in user["transactions"]:
+            print(f"{t['date']} | {t['type']} | {t['symbol']} | {t['shares']} shares @ ${t['price']}")
 
-    self.user["transactions"].append({
-        "type": "sell",
-        "symbol": symbol,
-        "shares": partial_sell,
-        "price": price,
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
+    def total_account_value(self, user):
+        total = user["balance"]
+        for symbol, info in user["portfolio"].items():
+            # info holds the value of user["portfolio"][symbol]
+            price = self.get_price(symbol)
+            if price:
+                total += price * info["shares"]
+        return round(total, 2)
 
-def view_transactions(self, user):
-    if not self.user["transactions"]:
-        print("This account does not have any transactions.")
-        return
+    def record_daily_value(self, user):
+        today = datetime.now().strftime("%Y:%m:%d")
+        value = self.total_account_value(user)
 
-    for t in self.user["transactions"]:
-        print(f"{t['date']} | {t['type']} | {t['symbol']} | {t['shares']} shares @ ${t['price']}")
+        if "history" not in user:
+            user["history"] = []
 
+        if user["history"] and user["history"][-1]["date"] == today:  # checks if theres already a history and if the most recent entry was today
+            user["history"][-1]["value"] = value
+            # replace the previous total_account_value with today's
+        else:  # if theres no history of the total_account_value
+            user["history"].append({"date": today, "value": value})
 
-def total_account_value(self, user):
-	total = self.user["balance"]
-	for symbol, info in self.user["portfolio"].items():
-	# info holds the value of user["portfolio"][symbol]
+    def show_daily_gain_loss(self, user):
+        if "history" not in user or len(user["history"]) < 2:
+            print("Not enough data to show daily gain/loss")
+            return
 
-		price = get_price(symbol)
-			if price:
-			total += price * info["shares"]
-	return round(total, 2)
+        today = user["history"][-1]["value"]
+        yesterday = user["history"][-2]["value"]
 
-def record_daily_value(user):
-	today = datetime.now().strftime("%Y:%m:%d")
-	value = total_account_value(user)
+        change = today - yesterday
+        percent = (change / yesterday) * 100
 
-	if "history" not in user:
-		user["history"] = []
-
-	if user["history"] and user["history"][-1]["date"] == today: #checks if theres already a history and if the most recent entry was today
-		user["history"][-1]["value"] = value
-		#replace the previous total_account_value with today's 
-
-	else: #if theres no history of the total_account_value
-	   user["history"].append({"date": today, "value": value})
-
-def show_daily_gain_loss(user):
-	if "history" not in user or len(user["history"]) < 2:
-		print("Not enough data to show daily gain/loss")
-		return
-
-	today = user["history"][-1]["value"]
-	yesterday = user["history"][-2]["value"]
-
-	change = today - yesterday
-	percent = (change / yesterday) * 100
-
-	print("\n📊 Daily Performance:")
+        print("\n📊 Daily Performance:")
         print(f"Yesterday: ${yesterday}")
         print(f"Today:     ${today}")
 
-	if change >=0:
-		print(f" Gain: +${round(change, 2)} (+{round(percent, 2)}%)")
-	else:
-		print(f" Loss: -${round(change, 2)} (-{round(percent, 2)}%)")
-
+        if change >= 0:
+            print(f" Gain: +${round(change, 2)} (+{round(percent, 2)}%)")
+        else:
+            print(f" Loss: -${round(change, 2)} (-{round(percent, 2)}%)")
