@@ -98,3 +98,22 @@ class StockData:
 
         except Exception as e:
             print(f"Error fetching data for {symbol}: {e}")
+
+    def get_announcements(symbol):
+        ticker = yf.Ticker(symbol)
+        news_items = ticker.news if hasattr(ticker, "news") else []
+
+        announcements = []
+
+        for item in news_items[:5]:
+            title = item.get("title", "")
+            publisher = item.get("publisher", "")
+            announcements.append(f"{title} ({publisher})")
+
+
+        if not announcements:
+            announcements = [f"No recent announcements regarding {symbol.upper()}"]
+
+        return announcements
+    
+    
