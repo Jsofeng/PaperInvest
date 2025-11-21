@@ -1,2 +1,0 @@
-- Latest Market Data information (text style not price)
-
