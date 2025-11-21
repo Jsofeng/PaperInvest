@@ -1,4 +1,3 @@
-# data_handler.py
 import yfinance as yf
 import matplotlib.pyplot as plt
 import json
@@ -72,32 +71,30 @@ class StockData:
                 changes.append((symbol, change))
 
         top_losers = sorted(changes, key=lambda x: x[1])[:5]
-	#x : x[1] means use the second value in the hashmap which is the %
-	#key = parameter tells python what value to sort lambda x: x[1] creates a tiny function that returns the second value of each element in the hashmap
+        #x : x[1] means use the second value in the hashmap which is the %
+        #key = parameter tells python what value to sort lambda x: x[1] creates a tiny function that returns the second value of each element in the hashmap
         print("\n 📉 [Top 5 Losers]")
         for symbol, change in top_losers:
             print(f"[{symbol}]: {change}%")
 
+    def display_stock_history(self, symbol, period, interval):
 
-    def display_stock_history(symbol, period, interval):
+        try:
+            stock = yf.Ticker(symbol)
+            data = stock.history(period=period, interval=interval)
 
-	try:
-		stock = yf.Ticker(symbol)
-		data = stock.history(period=period, interval=interval)
+            if data.empty:
+                print("No data found for this stock")
+                return
 
-		if data.empty:
-			print("No data found for this stock)
-			return
+            plt.figure(figsize=(10, 5))
+            plt.plot(data.index, data["Close"], label=f"{symbol}, Price", color="blue")
+            plt.title(f"{symbol} price history ({period})")
+            plt.xlabel("Date")
+            plt.ylabel("Price [USD]")
+            plt.grid(True)
+            plt.legend()
+            plt.show()
 
-		plt.figure(figsize=(10,5))
-		plt.plot(data.index, data["Close"], label= f"{symbol}, Price", color="blue")
-		plt.title(f"{symbol} price history ({period})")
-		plt.xlabel("Date")
-		plt.ylabel("Price [USD]")
-		plt.grid(True)
-		plt.legend()
-		plt.show()
-
-
-	except Exception as e:
-		print(f"Error fetching data for {symbol}: {e}")
+        except Exception as e:
+            print(f"Error fetching data for {symbol}: {e}")
