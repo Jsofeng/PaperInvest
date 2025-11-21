@@ -116,4 +116,23 @@ class StockData:
 
         return announcements
     
-    
+    def get_event_dates(symbol):
+        ticker = yf.Ticker(symbol)
+
+        try:
+            earnings_df = ticker.get_earnings_dates().reset_index()
+            earnings_list = earnings_df.to_dict(orient="records")
+        except:
+            earnings_list = []
+
+        try:
+            dividends = ticker.dividends
+            last_dividend_date = dividends.index[-1].strftime("%Y-%m-%d") if len(dividends) > 0 else None
+        except:
+            last_dividend_date = None
+
+        return {
+            "earnings_call": earnings_list[0]["Earnings Dates"].strftime("%Y-%m-%d") if earnings_list else None,
+            "dividend_date": last_dividend_date,
+            "product_event": None,
+        }  
