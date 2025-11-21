@@ -1,5 +1,6 @@
 import yfinance as yf
 import matplotlib.pyplot as plt
+from dateTime import datetime
 import json
 import os
 
@@ -99,40 +100,64 @@ class StockData:
         except Exception as e:
             print(f"Error fetching data for {symbol}: {e}")
 
-    def get_announcements(symbol):
+    def get_announcements(self, symbol):
         ticker = yf.Ticker(symbol)
         news_items = ticker.news if hasattr(ticker, "news") else []
 
         announcements = []
 
-        for item in news_items[:5]:
-            title = item.get("title", "")
+        for item in news_items[:5]: #only loop through the first 5 articles
+            title = item.get("title", "") #returns "" empty string if title cannot be extracted 
             publisher = item.get("publisher", "")
             announcements.append(f"{title} ({publisher})")
-
 
         if not announcements:
             announcements = [f"No recent announcements regarding {symbol.upper()}"]
 
         return announcements
-    
-    def get_event_dates(symbol):
+
+    def get_event_dates(self, symbol):
         ticker = yf.Ticker(symbol)
 
+        # Earnings date
         try:
             earnings_df = ticker.get_earnings_dates().reset_index()
             earnings_list = earnings_df.to_dict(orient="records")
         except:
             earnings_list = []
 
+        # Dividend date
         try:
             dividends = ticker.dividends
-            last_dividend_date = dividends.index[-1].strftime("%Y-%m-%d") if len(dividends) > 0 else None
+            last_dividend_date = (
+                dividends.index[-1].strftime("%Y-%m-%d") if len(dividends) > 0 else None
+            )
         except:
             last_dividend_date = None
 
         return {
-            "earnings_call": earnings_list[0]["Earnings Dates"].strftime("%Y-%m-%d") if earnings_list else None,
+            "earnings_call": (
+                earnings_list[0]["Earnings Dates"].strftime("%Y-%m-%d")
+                if earnings_list
+                else None
+            ),
             "dividend_date": last_dividend_date,
             "product_event": None,
-        }  
+        }
+
+    def get_latest_market_updates(self, symbol): 
+        """
+        because get_latest_market_updates() is calling the other methods, it must use self to access them.
+        """
+    
+        symbol = symbol.upper()
+
+        announcements = self.get_announcements(symbol)
+        events = self.get_event_dates(symbol)
+
+        return {
+            "symbol": symbol,
+            "announcements": announcements[:4],
+            "events": events,
+            "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
